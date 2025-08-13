@@ -5,7 +5,7 @@ import Addbook from './pages/Addbook.jsx';
 import DeleteBook from './pages/DeleteBook.jsx';
 import Applayout from './components/layout/Applayout.jsx';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-
+import './index.css';
 const App = () => {
   const router = createBrowserRouter([
     {
