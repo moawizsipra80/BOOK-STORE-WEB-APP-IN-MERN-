@@ -8,12 +8,10 @@ import GoogleMap from './GoogleMap.jsx';
 const Applayout = () => {
   return (
    <>
-   {/* <Header /> */}
-   <Navbar /> 
-   <HeroSection/>
-   <BHeroSection/>
-   <GoogleMap/>
+    <Navbar /> 
+ 
    <Outlet/>
+   <GoogleMap/>
    <Footer />
    </>
   );
