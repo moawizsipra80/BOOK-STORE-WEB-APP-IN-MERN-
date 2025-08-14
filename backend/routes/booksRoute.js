@@ -6,7 +6,7 @@ const router = express.Router();
 
 //save a  new book
 
-router.post("/", async (request, response) => {
+router.post("/api/books", async (request, response) => {
   try {
     if (
       !request.body.title ||
@@ -21,10 +21,15 @@ router.post("/", async (request, response) => {
       title: request.body.title,
       author: request.body.author,
       publishYear: request.body.publishYear,
+      description:request.body.description,
+      stock:request.body.stock,
+      image:request.body.image,
     };
     const book = await Book.create(newbook);
-    return response.status(201).send(book);
-  } catch (error) {
+    response.status(201).send(book);
+  } 
+  catch (error)
+   {
     console.log(error.message);
     return response.status(500).send(error.message);
   }
