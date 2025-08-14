@@ -8,9 +8,8 @@ const app = express();
 //parsing request body
 app.use(express.json());
 //use cors middleware
-app.use(
-  cors({
-    origin:`http://localhost:3000`,
+app.use( cors({
+    origin:"http://localhost:5173",
     methods:['GET','POST','PUT','DELETE'],
     allowedHeaders:['Content-Type']
   })
@@ -19,7 +18,7 @@ app.get('/', (request, response) => {
   console.log(request);
   return response.status(200).send("Welcome to my first MERN STACK PROJECT");
 });
-app.use('/books',booksRoute);
+app.use('/api/books',booksRoute);
 mongoose
   .connect(mongoDBURL)
   .then(() => {

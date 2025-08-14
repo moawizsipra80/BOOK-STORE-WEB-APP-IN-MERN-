@@ -1,17 +1,25 @@
 import express from "express";
 import {Book} from "../models/bookModels.js"; 
-
 const router = express.Router();
+// import multer from "multer";
 
+
+
+// const upload = multer({ dest: "uploads/" });
+
+// app.post("/books", upload.single("image"), (req, res) => {
+//   console.log(req.body); // Title, Author, etc.
+//   console.log(req.file); // Image details
+//   res.json({ success: true });
+// });
 
 //save a  new book
-
-router.post("/api/books", async (request, response) => {
+// const upload = multer({ dest: "uploads/" });
+router.post("/", async (request, response) => {
   try {
     if (
       !request.body.title ||
-      !request.body.author ||
-      !request.body.publishYear
+      !request.body.author 
     ) {
       return response.status(400).send({
         message: "All fields are requires",
@@ -23,7 +31,7 @@ router.post("/api/books", async (request, response) => {
       publishYear: request.body.publishYear,
       description:request.body.description,
       stock:request.body.stock,
-      image:request.body.image,
+      // image:request.body.image,
     };
     const book = await Book.create(newbook);
     response.status(201).send(book);
