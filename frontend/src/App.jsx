@@ -1,11 +1,12 @@
 import { memo } from 'react';
 import Home from './pages/Home.jsx';
-import CreateBook from './pages/CreateBook.jsx';
+import CreateBook from './pages/SearchBook.jsx';
 import Addbook from './pages/Addbook.jsx';
 import DeleteBook from './pages/DeleteBook.jsx';
 import Applayout from './components/layout/Applayout.jsx';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import './index.css';
+import { ToastContainer } from "react-toastify";
 const App = () => {
   const router = createBrowserRouter([
     {
@@ -29,8 +30,13 @@ const App = () => {
       ],
     },
   ]);
+ return (
+    <>
+      <RouterProvider router={router} />
+      <ToastContainer position="top-right" autoClose={3000} />
+    </>
+  );
 
-  return <RouterProvider router={router} />;
 };
 
 export default memo(App);
