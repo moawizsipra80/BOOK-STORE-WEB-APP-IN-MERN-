@@ -19,7 +19,7 @@ const HeroSection = () => {
           <p className="text-lg text-gray-700 mb-6 ">Find your favorite books here.</p>
           <Link to={'/Addbook'}>
         
-            <Button>Explore BOOKS</Button>
+            <Button to={'/Addbook'} >Explore BOOKS</Button>
           </Link>
             </motion.div>
         </div>

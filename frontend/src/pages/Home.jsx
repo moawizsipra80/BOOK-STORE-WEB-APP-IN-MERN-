@@ -9,7 +9,7 @@ const Home = () => {
     <div className="Home">
       <HeroSection/>
       <BHeroSection/>
-         <GoogleMap/>
+         {/* <GoogleMap/> */}
 
     </div>
   );

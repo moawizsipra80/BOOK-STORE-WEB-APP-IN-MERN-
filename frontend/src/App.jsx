@@ -5,7 +5,8 @@ import Addbook from './pages/Addbook.jsx';
 import DeleteBook from './pages/DeleteBook.jsx';
 import Applayout from './components/layout/Applayout.jsx';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import './index.css';
+import { ToastContainer } from "react-toastify";
+
 const App = () => {
   const router = createBrowserRouter([
     {
@@ -28,9 +29,15 @@ const App = () => {
          },
       ],
     },
+    
   ]);
-
-  return <RouterProvider router={router} />;
+   return (
+    <>
+      <RouterProvider router={router} />
+      <ToastContainer /> 
+    </>
+   )
+  // return <RouterProvider router={router} />;
 };
 
 export default memo(App);
