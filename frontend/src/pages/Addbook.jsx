@@ -14,10 +14,11 @@ const Addbook = () => {
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
  const [stock, setStock] = useState("");
+ const [year,setpublishYear]=useState(""); 
 
   // const [image, setimage] = useState(null);
   const HandleSubmit = () => {
-    const formData = { title, author, description, price, stock};
+    const formData = { title, author,setpublishYear, description, price, stock};
     console.log(formData);
     fetch("http://localhost:3000/api/books", {
       method: "POST",
@@ -79,6 +80,14 @@ const Addbook = () => {
             type="number"
             name="Stock"
             placeholder="stock"
+            className="w-full border border-gray-300 rounded px-4 py-2"
+          />
+            <input
+            value={year}
+            onChange={(e) => setpublishYear(e.target.value)}
+            type="text"
+            name="publishYear"
+            placeholder="dd/mm/yyyy"
             className="w-full border border-gray-300 rounded px-4 py-2"
           />
           {/* <input

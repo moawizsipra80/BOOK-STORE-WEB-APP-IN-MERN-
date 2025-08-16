@@ -19,7 +19,8 @@ router.post("/", async (request, response) => {
   try {
     if (
       !request.body.title ||
-      !request.body.author 
+      !request.body.author ||
+      !request.body.publishYear
     ) {
       return response.status(400).send({
         message: "All fields are requires",
@@ -31,6 +32,8 @@ router.post("/", async (request, response) => {
       publishYear: request.body.publishYear,
       description:request.body.description,
       stock:request.body.stock,
+      price:request.body.price,
+      
       // image:request.body.image,
     };
     const book = await Book.create(newbook);
