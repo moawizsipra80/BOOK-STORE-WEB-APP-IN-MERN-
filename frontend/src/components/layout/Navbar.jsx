@@ -15,7 +15,7 @@ const Navbar = () => {
         {/* Center: Nav links */}
         <div className="flex space-x-10">
           <Navbarbutton className="text-white hover:underline" to="/">Home</Navbarbutton>
-          <Navbarbutton className="text-white hover:underline" to="/CreateBook">CreateBook</Navbarbutton>
+          <Navbarbutton className="text-white hover:underline" to="/CreateBook">SearchBook</Navbarbutton>
           <Navbarbutton className="text-white hover:underline" to="/DeleteBook">DeleteBook</Navbarbutton>
           <Navbarbutton className="text-white hover:underline" to="/Addbook">AddBook</Navbarbutton>
         </div>

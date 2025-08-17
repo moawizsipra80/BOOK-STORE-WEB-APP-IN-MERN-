@@ -1,25 +1,24 @@
 import express from "express";
 import {Book} from "../models/bookModels.js"; 
 const router = express.Router();
-// import multer from "multer";
-
-
-
-// const upload = multer({ dest: "uploads/" });
-
-// app.post("/books", upload.single("image"), (req, res) => {
-//   console.log(req.body); // Title, Author, etc.
-//   console.log(req.file); // Image details
-//   res.json({ success: true });
-// });
-
+import multer from "multer";
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "uploads/");
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + "-" + file.originalname); 
+  },
+});
+const upload = multer({ storage });
 //save a  new book
-// const upload = multer({ dest: "uploads/" });
-router.post("/", async (request, response) => {
+
+router.post("/", upload.single("image"), async (request, response) => {
   try {
     if (
       !request.body.title ||
-      !request.body.author 
+      !request.body.author||
+      !request.body.publishYear 
     ) {
       return response.status(400).send({
         message: "All fields are requires",
@@ -31,7 +30,8 @@ router.post("/", async (request, response) => {
       publishYear: request.body.publishYear,
       description:request.body.description,
       stock:request.body.stock,
-      // image:request.body.image,
+      price:request.body.price,
+      image: req.file ? req.file.filename : null, 
     };
     const book = await Book.create(newbook);
     response.status(201).send(book);
@@ -47,10 +47,7 @@ router.post("/", async (request, response) => {
 router.get("/", async (request, response) => {
   try {
     const books = await Book.find();
-    return response.status(200).json({
-      count: books.length,
-      data: books,
-    });
+    response.json(books); 
   } catch (error) {
     return response.status(500).send(error.message);
   }
