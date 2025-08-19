@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const bookSchema = new mongoose.Schema(
   {
@@ -10,9 +10,10 @@ const bookSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    publishYear: {
-      type: Number,
-      max: new Date().getFullYear(),
+  publishYear: {
+      type: Number,              // Sirf year store hoga
+      min: 1000,
+      max: new Date().getFullYear(), // Dynamic max year
       required: true,
     },
     description: {
@@ -20,7 +21,7 @@ const bookSchema = new mongoose.Schema(
       required: true,
     },
     price: {
-      type: Number,  
+      type: Number,
       required: true,
     },
     image: {
@@ -28,10 +29,10 @@ const bookSchema = new mongoose.Schema(
       required: true,
     },
     stock: {
-      type: Number,   
+      type: Number,
     },
   },
   { timestamps: true }
 );
 
-export const Book = mongoose.model('Book', bookSchema);
+export const Book = mongoose.model("Book", bookSchema);

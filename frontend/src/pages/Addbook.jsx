@@ -7,44 +7,36 @@ import { useState } from "react";
 import axios from "axios";
 const Addbook = () => {
   const [title, setTitle] = useState("");
-  const [author, setAauthor] = useState("");
+  const [author, setAuthor] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
   const [stock, setStock] = useState("");
   const [year, setpublishYear] = useState("");
   const [image, setImage] = useState(null);
   const HandleSubmit = () => {
+    const onlyYear = new Date(year).getFullYear();
     // const formData = { title, author, description, price, stock,publishYear,image};
     const formData = new FormData();
     formData.append("title", title);
     formData.append("author", author);
     formData.append("description", description);
-    formData.append("publishYear", year);
+    formData.append("publishYear", onlyYear);
     formData.append("price", price);
     formData.append("stock", stock);
     formData.append("image", image);
 
     console.log(formData);
-
-    //agar ham image+text bhej rahe hon to hamain form data bhejna chahiye aur fetch ki jagha sxxios use karn achahaiye aaur body json nai likhna chahiye kionnkah ye khd hi in sabko handle karleta ha
-    // fetch("http://localhost:3000/api/books", {
-    //   method: "POST",
-    //   // headers: { "Content-Type": "application/json" },
-    //   headers:{"Content-Typre":"multipart/form-data"},
-    //   // body: JSON.stringify(formData),
-    // }
     axios
-      .post("http://localhost:3000/api/books", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data", // kyunki image bhi bhej rahe ho
-        },
-      })
-
-      // .then((response) => response.json())
+      .post("http://localhost:3000/api/books", formData)
       .then(() => toast.success("Book Added Successfully"))
-      .catch(() => toast.error("Something Went Wrong"));
+      .catch((err) => {
+        console.error(
+          "Error while saving book:",
+          err.response?.data || err.message
+        );
+        toast.error("Something Went Wrong");
+      });
   };
-
   return (
     <section className="bg-gray-100 py-20">
       <div className="container mx-auto flex flex-col md:flex-row items-start md:items-center justify-between px-6 md:px-12 gap-10">
@@ -67,7 +59,7 @@ const Addbook = () => {
           />
           <input
             value={author}
-            onChange={(e) => setAauthor(e.target.value)}
+            onChange={(e) => setAuthor(e.target.value)}
             type="text"
             name="author"
             placeholder="Author"
@@ -100,11 +92,12 @@ const Addbook = () => {
           <input
             value={year}
             onChange={(e) => setpublishYear(e.target.value)}
-            type="text"
+            type="date"
             name="year"
-            placeholder="mm/dd/yyyy"
+            placeholder="yyyy"
             className="w-full border border-gray-300 rounded px-4 py-2"
           />
+
           <input
             onChange={(e) => setImage(e.target.files[0])}
             type="file"

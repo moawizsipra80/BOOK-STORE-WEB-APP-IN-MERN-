@@ -1,52 +1,69 @@
 import express from "express";
-import {Book} from "../models/bookModels.js"; 
-const router = express.Router();
+import { Book } from "../models/bookModels.js";
 import multer from "multer";
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url"; 
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const router = express.Router();
+
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "uploads/");
+  destination: (request, file, cb) => {
+    const uploadPath = path.join(__dirname, "../uploads"); // uploads folder ko backend ke andar rakho
+    if (!fs.existsSync(uploadPath)) {
+      fs.mkdirSync(uploadPath, { recursive: true }); // folder auto-create ho jaye
+    }
+    cb(null, uploadPath);
   },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + "-" + file.originalname); 
+  filename: (request, file, cb) => {
+    cb(null, Date.now() + "-" + file.originalname);
   },
 });
-const upload = multer({ storage });
-//save a  new book
 
+const upload = multer({ storage });
+
+// Save a new book
 router.post("/", upload.single("image"), async (request, response) => {
   try {
-    if (
-      !request.body.title ||
-      !request.body.author||
-      !request.body.publishYear 
-    ) {
+    if (!request.body.title || !request.body.author || !request.body.publishYear) {
       return response.status(400).send({
-        message: "All fields are requires",
+        message: "All fields are required",
       });
     }
+
     const newbook = {
       title: request.body.title,
       author: request.body.author,
       publishYear: request.body.publishYear,
-      description:request.body.description,
-      stock:request.body.stock,
-      price:request.body.price,
-      image: req.file ? req.file.filename : null, 
+      description: request.body.description,
+      stock: request.body.stock,
+      price: request.body.price,
+      image: request.file ? request.file.filename : null,
     };
+
     const book = await Book.create(newbook);
     response.status(201).send(book);
-  } 
-  catch (error)
-   {
-    console.log(error.message);
+  } catch (error) {
+    console.error(error.message);
     return response.status(500).send(error.message);
   }
 });
-
 //making route to get all books from database
 router.get("/", async (request, response) => {
   try {
-    const books = await Book.find();
+    let filter={};
+    
+    if(request.query.title){
+
+      filter.title=new RegExp(request.query.title,"i");
+    }
+    const books= await Book.find(filter);
+    if(books.length===0 || !books){
+      return response.status(404).send("No books found by search element");
+    }
     response.json(books); 
   } catch (error) {
     return response.status(500).send(error.message);
