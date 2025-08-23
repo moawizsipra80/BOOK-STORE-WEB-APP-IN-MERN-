@@ -52,22 +52,52 @@ router.post("/", upload.single("image"), async (request, response) => {
   }
 });
 //making route to get all books from database
+// router.get("/", async (request, response) => {
+//   try {
+//     let filter={};
+    
+//     if(request.query.title){
+
+//       filter.title=new RegExp(request.query.title,"i");
+//     }
+//     const books= await Book.find(filter);
+//     if(books.length===0 || !books){
+//       return response.status(404).send("No books found by search element");
+//     }
+//     response.json(books); 
+//   } catch (error) {
+//     return response.status(500).send(error.message);
+//   }
+// });
 router.get("/", async (request, response) => {
   try {
-    let filter={};
-    
-    if(request.query.title){
-
-      filter.title=new RegExp(request.query.title,"i");
-    }
-    const books= await Book.find(filter);
-    if(books.length===0 || !books){
+ const books=await Book.find({});
+ if(books.length===0 || !books){
       return response.status(404).send("No books found by search element");
     }
-    response.json(books); 
-  } catch (error) {
-    return response.status(500).send(error.message);
+  response.json(books);
+ 
+}
+catch(error){
+    response.status(500).send(error.message);
   }
+});
+//search route
+router.get("/search", async (request, response) => {
+try{
+let filter={};
+if(request.query.filter){
+  filter.title=new RegExp(request.query.title,"i");
+}
+const book= await Book.findOne(filter)
+if(!book){
+  response.status(404).send("No books found by search  element");
+}
+response.json(book);
+}
+catch(error){
+  response.status(500).status(error.message)
+}
 });
 //making route to get books by id
 router.get("/:id", async (request, response) => {
