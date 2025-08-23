@@ -3,7 +3,7 @@ import Search from "../components/UI/Search.jsx";
 import Button from "../components/UI/Button.jsx";
 import axios from 'axios';
 const CreateBook = () => {
-const [book,setbook]=useState([]);
+const [books,setbooks]=useState([]);
 const [search,setsearch]=useState(null);//Api se data call hoga kiom kah ye ail object ha 
 const [searchtext,setsearchtext]=useState("");
 useEffect(() => {
@@ -14,25 +14,35 @@ useEffect(() => {
       .then((response) => response.json())
       .then((data) => {
         console.log("Fetched data:", data);
-        setbook(data);//object ban jayga 
+     if(Array.isArray(data)){
+      setbooks(data);
+     }
+     else if(Array.isArray(data.books)){
+      setbooks(data.books);
+     }
+     else{
+      setbooks([]);
+     }
       })
       .catch((error) => {
         console.error("Error fetching:", error.message);
+        
       });
   }, []);
 const handleSearch = async () => {
   try {
-    const response = await axios.get(`http://localhost:3000/api/books?title=${searchtext}`);
+    const response = await axios.get(`http://localhost:3000/api/books/search?title=${searchtext}`);
     console.log("Search response:", response.data); 
     setsearch(response.data);
   } catch (err) {
     console.error(err);
+   setsearch(null);
   }
 };
 
   const handlekeyDown=async (e)=>
     {
-if(e.key==="Enter")
+   if(e.key==="Enter")
 {
   handleSearch();
 }
@@ -72,29 +82,32 @@ if(e.key==="Enter")
     <div className="border-t border-gray-400 my-10"></div>
 
 
-<div className='flex justify-center gap-6 flex-wrap border-t border-gray-300 mt-10 pt-10'>
-  {search && (
-    <div className="bg-white p-6 rounded-lg shadow-lg flex flex-col items-center w-60 hover:shadow-2xl transition">
-      <div className="text-purple-500 mb-2">
-        {Array.isArray(search) ? search[0]?.title : search.title}
-      </div>
-      <div className="text-purple-400 font-semibold">
-        {Array.isArray(search) ? search[0]?.author : search.author}
-      </div>
-      <div className="text-purple-400 font-semibold">
-        {Array.isArray(search) ? search[0]?.description : search.description}
-      </div>
-      <div className="text-purple-400 font-semibold">
-        {Array.isArray(search) ? search[0]?.image : search.image}
-      </div>
-    </div>
-  )}
-</div>
+{/* {search.length>0 && ( */}
+  {/* <div className="bg-white p-6 rounded-lg shadow-lg flex flex-col items-center w-60 hover:shadow-2xl transition">
+  {search.map((searchbook,index)=>(
+    <div key={index} className="bg-white p-6 rounded-lg shadow-lg flex flex-col items-center w-60 hover:shadow-2xl transition"> 
+    <div className="text-purple-500 mb-2">{searchbook.title}</div>
+    <div className="text-purple-400 font-semibold">{searchbook.author}</div>
+    <div className="text-purple-400 font-semibold">{searchbook.description}</div>
+  </div>
+  ))}
+  </div> */}
+
+{/* search result */}
+{search && search.title && (
+  <div className="bg-white p-6 rounded-lg shadow-lg flex flex-col items-center w-60 hover:shadow-2xl transition"> 
+    <div className="text-purple-500 mb-2">{search.title}</div>
+    <div className="text-purple-400 font-semibold">{search.author}</div>
+    <div className="text-purple-400 font-semibold">{search.description}</div>
+  </div>
+)}
+
 
 
     {/* all books */}
     <div className="flex justify-center gap-6 flex-wrap">
-      {book.map((book, index) => (
+    {Array.isArray(books) && books.length > 0 ? (
+      books.map((book, index) => (
         <div
           key={index}
           className="bg-white p-6 rounded-lg shadow-lg flex flex-col items-center w-40 hover:shadow-2xl transition"
@@ -103,7 +116,10 @@ if(e.key==="Enter")
           <div className="text-purple-400 font-semibold">{book.author}</div>
           <div className="text-purple-400 font-semibold">{book.description}</div>
         </div>
-      ))}
+      ))
+    ): (
+    <p className="text-gray-500">No books available</p>
+  )}
     </div>
   </div>
 </section>
