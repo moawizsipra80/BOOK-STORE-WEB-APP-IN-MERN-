@@ -15,7 +15,6 @@ const Addbook = () => {
   const [image, setImage] = useState(null);
   const HandleSubmit = () => {
     const onlyYear = new Date(year).getFullYear();
-    // const formData = { title, author, description, price, stock,publishYear,image};
     const formData = new FormData();
     formData.append("title", title);
     formData.append("author", author);
@@ -26,8 +25,10 @@ const Addbook = () => {
     formData.append("image", image);
 
     console.log(formData);
-    axios
-      .post("http://localhost:3000/api/books", formData)
+    axios.post("http://localhost:3000/api/books", formData,{
+      headers:{"Content-Type":"multipart/form-data"}
+    })
+
       .then(() => toast.success("Book Added Successfully"))
       .catch((err) => {
         console.error(

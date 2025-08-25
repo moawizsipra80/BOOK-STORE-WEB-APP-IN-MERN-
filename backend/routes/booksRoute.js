@@ -9,7 +9,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const router = express.Router();
-
+// Static folder serve karo
 const storage = multer.diskStorage({
   destination: (request, file, cb) => {
     const uploadPath = path.join(__dirname, "../uploads"); // uploads folder ko backend ke andar rakho
@@ -27,7 +27,9 @@ const upload = multer({ storage });
 
 // Save a new book
 router.post("/", upload.single("image"), async (request, response) => {
-  try {
+    try {
+    console.log(request.body);
+    console.log("File",request.file);
     if (!request.body.title || !request.body.author || !request.body.publishYear) {
       return response.status(400).send({
         message: "All fields are required",
@@ -41,37 +43,26 @@ router.post("/", upload.single("image"), async (request, response) => {
       description: request.body.description,
       stock: request.body.stock,
       price: request.body.price,
-      image: request.file ? request.file.filename : null,
+      image: request.file ? `/uploads/${request.file.filename}` : null,
+
     };
 
-    const book = await Book.create(newbook);
+    const book = new Book.create(newbook);
     response.status(201).send(book);
   } catch (error) {
     console.error(error.message);
     return response.status(500).send(error.message);
   }
 });
-//making route to get all books from database
-// router.get("/", async (request, response) => {
-//   try {
-//     let filter={};
-    
-//     if(request.query.title){
-
-//       filter.title=new RegExp(request.query.title,"i");
-//     }
-//     const books= await Book.find(filter);
-//     if(books.length===0 || !books){
-//       return response.status(404).send("No books found by search element");
-//     }
-//     response.json(books); 
-//   } catch (error) {
-//     return response.status(500).send(error.message);
-//   }
-// });
 router.get("/", async (request, response) => {
   try {
  const books=await Book.find({});
+
+const booksWithImageUrls = books.map(book => ({
+      ...book._doc, // Spread the book document
+      image: book.image ? `http://localhost:3000/images/${book.image}` : null
+    }));
+    console.log("Fetched books:", booksWithImageUrls); console.log(books);
  if(books.length===0 || !books){
       return response.status(404).send("No books found by search element");
     }
@@ -82,21 +73,44 @@ catch(error){
     response.status(500).send(error.message);
   }
 });
-//search route
 router.get("/search", async (request, response) => {
+  try {
+    let filter = {};
+    if (request.query.title) {
+      // Partial match with case-insensitive option
+      filter.title = { $regex: request.query.title, $options: "i" };
+    }
+
+    const books = await Book.find(filter);
+
+    if (!books || books.length === 0) {
+      return response.status(404).json({ message: "No books found matching the query" });
+    }
+
+    response.json(books);
+  } catch (error) {
+    response.status(500).json({ message: error.message });
+  }
+});
+//placing order
+router.post("/order",async(request,response)=>{
 try{
-let filter={};
-if(request.query.filter){
-  filter.title=new RegExp(request.query.title,"i");
+  if(!request.body.fname ||!request.body.sname ||!request.body.contact ||!request.body.postalcode)
+  {
+  return response.status(400).send("All fields are required");
 }
-const book= await Book.findOne(filter)
-if(!book){
-  response.status(404).send("No books found by search  element");
+const neworder={
+  fname:request.body.fname,
+  sname:request.body.sname,
+  contact:request.body.contact,
+  address:request.body.address,
+  postalcode:request.body.postalcode,
+  nearestplace:request.body.nearestplace,
 }
-response.json(book);
-}
-catch(error){
-  response.status(500).status(error.message)
+const neworder1=await Book.create(neworder);
+response.status(201).send(neworder1);
+} catch(error){
+  response.status(400).send("Error while placing order",error.message);
 }
 });
 //making route to get books by id

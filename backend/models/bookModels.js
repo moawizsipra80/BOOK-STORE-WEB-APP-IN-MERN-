@@ -10,8 +10,8 @@ const bookSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-  publishYear: {
-      type: Number,              // Sirf year store hoga
+    publishYear: {
+      type: Number, // Sirf year store hoga
       min: 1000,
       max: new Date().getFullYear(), // Dynamic max year
       required: true,
