@@ -2,7 +2,7 @@ import { memo } from 'react';
 import Home from './pages/Home.jsx';
 import CreateBook from './pages/SearchBook.jsx';
 import Addbook from './pages/Addbook.jsx';
-import Buynow from './pages/Buynow.jsx';
+import Buynow from "./pages/Buynow.jsx";
 import Applayout from './components/layout/Applayout.jsx';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import './index.css';
