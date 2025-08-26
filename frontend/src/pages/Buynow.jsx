@@ -11,20 +11,20 @@ const Buynow = () => {
   const [nearestplace, setnearestplace] = useState("");
   const [postalcode, setpostalcode] = useState("");
   const [contact, setcontactnumber] = useState("");
-
+ console.log({ fname, sname, contact, postalcode }); // 👈 ye dekho
   const handleSubmit = () => {
-    const formdata = new FormData();
-    formdata.append("fname", fname);
-    formdata.append("sname", sname);
-    formdata.append("address", address);
-    formdata.append("nearestplace", nearestplace);
-    formdata.append("postalcode", postalcode);
-    formdata.append("contact", contact);
+  
+const token = { fname, sname, address, nearestplace, postalcode, contact };
 
-    axios.post("http://localhost:3000/api/books/order", formdata, {
-      headers: { "Content-Type": "multipart/form-data" }
+
+         console.log(token);   
+    axios.post("http://localhost:3000/api/orders", token, {
+      headers: { "Content-Type": "application/json" }
+    
     })
+
       .then(() => toast.success("Your Order has been placed. You will receive your order in next three working days"))
+      
       .catch((error) => {
         console.error(error.message);
         toast.error("Something went wrong, please try again.");
@@ -67,7 +67,7 @@ const Buynow = () => {
           <input
             value={contact}
             onChange={(e) => setcontactnumber(e.target.value)}
-            type="number"
+            type="text"
             placeholder="Enter your phone number"
             className="w-full border border-gray-300 rounded px-4 py-2"
           />

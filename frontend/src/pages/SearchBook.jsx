@@ -1,19 +1,17 @@
 import { memo, useState, useEffect } from "react";
 import Search from "../components/UI/Search.jsx";
 import Button from "../components/UI/Button.jsx";
-import Buynow from "./Buynow.jsx";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const CreateBook = () => {
   const [books, setbooks] = useState([]);
-  const [search, setsearch] = useState([]); //Api se data call hoga kiom kah ye ail object ha
+  const [search, setsearch] = useState([]);
   const [searchtext, setsearchtext] = useState("");
- const navigate = useNavigate();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    axios
-      .get("http://localhost:3000/api/books")
+    axios.get("http://localhost:3000/api/books")
       .then((response) => {
         console.log("Books Response:", response.data);
         setbooks(response.data);
@@ -26,7 +24,6 @@ const CreateBook = () => {
       const response = await axios.get(
         `http://localhost:3000/api/books/search?title=${searchtext}`
       );
-   
       console.log("Search response:", response.data);
       setsearch(Array.isArray(response.data) ? response.data : []);
     } catch (err) {
@@ -39,11 +36,10 @@ const CreateBook = () => {
       handleSearch();
     }
   };
- 
-const buy = (bookID) => {
-  navigate(`/buynow/${bookID}`);
-};
 
+  const buy = (bookID) => {
+    navigate(`/buynow/${bookID}`);
+  };
 
   return (
     <section className="bg-gray-100 py-20">
@@ -57,7 +53,7 @@ const buy = (bookID) => {
           </p>
         </header>
 
-        {/* search bar */}
+        {/* Search bar */}
         <div className="flex flex-col items-center justify-center">
           <Search
             placeholder="Search for book..."
@@ -75,9 +71,7 @@ const buy = (bookID) => {
           </Button>
         </div>
 
-        {/* grey line */}
-        <div className="border-t border-gray-400 my-10"></div>
-
+        {/* Grey line */}
         <div className="border-t border-gray-400 my-10"></div>
 
         {/* Search results */}
@@ -89,9 +83,10 @@ const buy = (bookID) => {
                 className="bg-white p-6 rounded-lg shadow-lg flex flex-col items-center w-60 hover:shadow-2xl transition"
               >
                 <img
-                  src={book.image}
+                  src={book.image || '/default-book.jpg'} // Use full URL or fallback
                   alt={book.title}
                   className="w-32 h-48 object-cover mb-4 rounded"
+                  onError={() => console.log(`Image failed to load: ${book.image}`)}
                 />
                 <div className="text-purple-500 mb-2">{book.title}</div>
                 <div className="text-purple-400 font-semibold">
@@ -101,11 +96,12 @@ const buy = (bookID) => {
                   {book.description || "No description available"}
                 </div>
                 <div className="text-purple-400 font-semibold">
-                  Price:${book.price ?? book.price.toFixed(2)}
+                  Price: ${book.price ? book.price.toFixed(2) : "N/A"}
                 </div>
                 <div className="text-purple-400 font-semibold">
-                  stock:{book.stock ?? "N/A"}
+                  Stock: {book.stock ?? "N/A"}
                 </div>
+                <Button onClick={() => buy(book._id)}>Buy Now</Button>
               </div>
             ))}
           </div>
@@ -116,7 +112,7 @@ const buy = (bookID) => {
           )
         )}
 
-        {/* all books */}
+        {/* All books */}
         <div className="flex justify-center gap-6 flex-wrap">
           {Array.isArray(books) && books.length > 0 ? (
             books.map((book, index) => (
@@ -124,13 +120,12 @@ const buy = (bookID) => {
                 key={book._id || index}
                 className="bg-white p-6 rounded-lg shadow-lg flex flex-col items-center w-60 hover:shadow-2xl transition"
               >
-                {book.image && (
-                  <img
-                    src={`http://localhost:3000/images/${book.image}`}
-                    alt={book.title}
-                    className="w-32 h-48 object-cover mb-4 rounded"
-                  />
-                )}
+                <img
+                  src={book.image || '/default-book.jpg'} // Use full URL or fallback
+                  alt={book.title}
+                  className="w-32 h-48 object-cover mb-4 rounded"
+                  onError={() => console.log(`Image failed to load: ${book.image}`)}
+                />
                 <div className="text-purple-500 mb-2 font-bold">
                   {book.title}
                 </div>
@@ -138,18 +133,15 @@ const buy = (bookID) => {
                   Author: {book.author}
                 </div>
                 <div className="text-purple-400 font-semibold">
-                  Description: {book.description}
+                  Description: {book.description || "No description available"}
                 </div>
                 <div className="text-purple-400 font-semibold">
-                  Price: ${book.price ?? "N/A"}
+                  Price: ${book.price ? book.price.toFixed(2) : "N/A"}
                 </div>
                 <div className="text-purple-400 font-semibold">
                   Stock: {book.stock ?? "N/A"}
                 </div>
-
-       
                 <Button onClick={() => buy(book._id)}>Buy Now</Button>
-
               </div>
             ))
           ) : (
